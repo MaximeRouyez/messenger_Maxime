@@ -38,10 +38,9 @@ def start ():
         channelscreen()
 
 def userscreen ():
-    n = len(server['users'])
     print('Users:')
-    for i in range (n): 
-        print(i+1, '.', server['users'][i]['name'])
+    for user in server['users']:
+        print(user['id'], '.', user['name'])
     print('n. Create user')
     print('x. Main Menu')
     choice = input('Select an option and press <Enter>: ')
@@ -53,10 +52,9 @@ def userscreen ():
         userscreen()
 
 def channelscreen ():
-    m = len(server['channels'])
     print('channels')
-    for i in range (m):
-        print(i+1, '.', server['channels'][i]['name'])
+    for channel in server['channels']:
+        print(channel['id'], '.', channel['name'])
     print('x. Main Menu')
     print('n. Create channel')
     choice = input('Select an option and press <Enter>: ')

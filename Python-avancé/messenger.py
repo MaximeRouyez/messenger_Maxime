@@ -1,8 +1,9 @@
 from datetime import datetime
-
 import json
-with open ('server_json.json') as file:
-    server = json.load(file)
+def load_server():
+    with open ('server_json.json') as file:
+        return json.load(file)
+server = load_server()
 # server = {
 #     'users': [
 #         {'id': 1, 'name': 'Alice'},
@@ -64,7 +65,7 @@ def channelscreen ():
         channelscreen()
 
 def newchannel():
-    nom = input('Select a name and press <Enter>: ')
+    nomgrp= input('Select a name and press <Enter>: ')
     n_id = max(d['id'] for d in server['channels'])+1
     L=[]
     print('x. Leave')
@@ -76,14 +77,14 @@ def newchannel():
             if user['name'] == nom:
                 L.append(user['id'])
             else:
-                n_id = max(d['id'] for d in server['users'])+1
-                server['users'].append({'id': n_id, 'name': nom})
-                L.append(n_id)
+                n2_id = max(d['id'] for d in server['users'])+1
+                server['users'].append({'id': n2_id, 'name': nom})
+                L.append(n2_id)
     elif choice == 'x':
         channelscreen()
     else:
         channelscreen()
-    server['channels'].append({'id': n_id, 'name': nom, 'member_ids': L})
+    server['channels'].append({'id': n_id, 'name': nomgrp, 'member_ids': L})
     accueil()
 
 def newuser():

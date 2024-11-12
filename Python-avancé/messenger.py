@@ -22,8 +22,6 @@ with open ('server_json.json') as file:
 #     ]
 # }
 
-
-
 def start ():
     print('=== Messenger ===')
     print('x. Leave')
@@ -38,10 +36,9 @@ def start ():
         channelscreen()
 
 def userscreen ():
-    n = len(server['users'])
     print('Users:')
-    for i in range (n): 
-        print(i+1, '.', server['users'][i]['name'])
+    for user in server['users']:
+        print(user['id'], '.', user['name'])
     print('n. Create user')
     print('x. Main Menu')
     choice = input('Select an option and press <Enter>: ')
@@ -53,17 +50,41 @@ def userscreen ():
         userscreen()
 
 def channelscreen ():
-    m = len(server['channels'])
     print('channels')
-    for i in range (m):
-        print(i+1, '.', server['channels'][i]['name'])
+    for channel in server['channels']:
+        print(channel['id'], '.', channel['name'])
     print('x. Main Menu')
     print('n. Create channel')
     choice = input('Select an option and press <Enter>: ')
     if choice == 'x':
         start()
+    elif choice == 'n':
+        newchannel()
     else: 
         channelscreen()
+
+def newchannel():
+    nom = input('Select a name and press <Enter>: ')
+    n_id = max(d['id'] for d in server['channels'])+1
+    L=[]
+    print('x. Leave')
+    print('a. Add users')
+    choice = input('Select an option and press <Enter>: ')
+    if choice == 'a':
+        nom = input('Select a name and press <Enter>: ')
+        for user in server['users']:
+            if user['name'] == nom:
+                L.append(user['id'])
+            else:
+                n_id = max(d['id'] for d in server['users'])+1
+                server['users'].append({'id': n_id, 'name': nom})
+                L.append(n_id)
+    elif choice == 'x':
+        channelscreen()
+    else:
+        channelscreen()
+    server['channels'].append({'id': n_id, 'name': nom, 'member_ids': L})
+    accueil()
 
 def newuser():
     nom = input('Select a name and press <Enter>: ')

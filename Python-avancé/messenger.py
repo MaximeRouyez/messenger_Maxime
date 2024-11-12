@@ -2,8 +2,38 @@ from datetime import datetime
 import json
 def load_server():
     with open ('server_json.json') as file:
-        return json.load(file)
-server = load_server()
+        server= json.load(file)
+
+    return load_server()
+
+class User:
+    def __init__(self, name: str, id: int):
+        self.id = id
+        self.name = name
+
+class Channels:
+    def __init__(self, id: int, name: str, member_ids: str):
+        self.id = id
+        self.name = name
+        self.member_ids = member_ids
+
+class Messages:
+    def __init__(self, id: int, reception_date: str, sender_id: int, channel: int, content: str):
+        self.id = id
+        self.reception_date = reception_date
+        self.sender_id = sender_id
+        self.channel = channel
+        self.content = content
+
+def conversion_dico_user(dico):
+    return User[dico['id'], dico['name']]
+
+def conversion_dico_channels(dico):
+    return Channels[dico['id'], dico['name'], dico['member_ids']]
+
+def conversion_dico_messages(dico):
+    return Messages[dico['id'], dico['reception_date'], dico['sender_id'], dico['channel'], dico['content']]
+
 # server = {
 #     'users': [
 #         {'id': 1, 'name': 'Alice'},

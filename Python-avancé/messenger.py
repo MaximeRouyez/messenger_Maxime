@@ -6,7 +6,13 @@ def load_server():
         users = [User(user['name'], user['id']) for user in server['users']]
         channels = [Channels(channel['id'], channel['name'], channel['member_ids']) for channel in server['channels']]
         messages = [Messages(message['id'], message['reception_date'], message['sender_id'], message['channel'], message['content']) for message in server['messages']]
-    return users, channels
+
+    server_with_classes = {
+        'users': users,
+        'channels': channels,
+        'messages': messages
+    }
+    return server_with_classes
 
 class User:
     def __init__(self, name: str, id: int):
@@ -57,7 +63,8 @@ def start ():
 
 def userscreen ():
     print('Users:')
-    users = load_server()
+    server_with_classes = load_server()
+    users: list[User] = server_with_classes['users']
     for user in users:
         print(user.id, '.', user.name)
     print('n. Create user')
@@ -72,7 +79,8 @@ def userscreen ():
 
 def channelscreen ():
     print('channels')
-    channels = load_server()
+    server_with_classes = load_server()
+    channels = server_with_classes['channels']
     for channel in channels:
         print(channel.id, '.', channel.name)
     print('x. Main Menu')
@@ -124,8 +132,8 @@ def accueil():
         print('Bye!')
     elif choice== '1':
         userscreen()
-    # elif choice == '2':
-    #     channelscreen()
+    elif choice == '2':
+        channelscreen()
     else :
         print('Unknown option:', choice)
         accueil()

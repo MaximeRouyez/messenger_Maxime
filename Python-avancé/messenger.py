@@ -1,7 +1,10 @@
 from datetime import datetime
 import json
+
+SERVER_FILE_PATH = 'server_json.json'
+
 def load_server():
-    with open ('server_json.json') as file:
+    with open (SERVER_FILE_PATH) as file:
         server= json.load(file)
         users = [User(user['name'], user['id']) for user in server['users']]
         channels = [Channels(channel['id'], channel['name'], channel['member_ids']) for channel in server['channels']]
@@ -13,6 +16,21 @@ def load_server():
         'messages': messages
     }
     return server_with_classes
+
+def save_server(server_with_classes):
+    '''Sauvegarde le serveur dans un fichier json.'''
+
+    # `server_with_classes` est un dictionnaire qui contient des listes d'objet.
+    # Il faut commencer par convertir chacun de ces objets en dictionnaire,
+    # pour ensuite convertir le tout en json.
+    server_with_dicts = {}
+    server_with_dicts['users'] = [user.to_dict() for user in server_with_classes['users']]
+    server_with_dicts['channels'] = [channel.to_dict() for channel in server_with_classes['channels']]
+    server_with_dicts['messages'] = [message.to_dict() for message in server_with_classes['messages']]
+
+    # `server_with_dicts` est un dictionnaire de listes de dictionnaires : on peut le convertir en json directement.
+    with open(SERVER_FILE_PATH, 'w') as server_json_file:
+        json.dump(server_with_dicts, server_json_file)
 
 class User:
     def __init__(self, name: str, id: int):

@@ -21,6 +21,17 @@ class User:
     def __repr__(self):
         return f'User(name={self.name}, id={self.id}, )'
 
+    def to_dict(self) -> dict:
+        '''Convertit un objet `user` de la classe `User` en `dict`.
+
+        Exemple :
+        >>> user_dict = user.to_dict()
+        '''
+        return {
+            'id': self.id,
+            'name': self.name
+        }
+
 class Channels:
     def __init__(self, id: int, name: str, member_ids: str):
         self.id = id
@@ -28,6 +39,18 @@ class Channels:
         self.member_ids = member_ids
     def __repr__(self):
         return f'Channels(id={self.id}, name={self.name}, member_ids={self.member_ids})'
+
+    def to_dict(self) -> dict:
+        '''Convertit un objet `channel` de la classe `Channels` en `dict`.
+
+        Exemple :
+        >>> channel_dict = channel.to_dict()
+        '''
+        return {
+            'id': self.id,
+            'name': self.name,
+            'member_ids': self.member_ids
+        }
 
 class Messages:
     def __init__(self, id: int, reception_date: str, sender_id: int, channel: int, content: str):
@@ -38,6 +61,20 @@ class Messages:
         self.content = content
     def __repr__(self):
         return f'Messages(id={self.id}, reception_date={self.reception_date}, sender_id={self.sender_id}, channel={self.channel}, content={self.content})'
+
+    def to_dict(self) -> dict:
+        '''Convertit un objet `message` de la classe `Messages` en `dict`.
+
+        Exemple :
+        >>> message_dict = message.to_dict()
+        '''
+        return {
+            'id': self.id,
+            'reception_date': self.reception_date,
+            'sender_id': self.sender_id,
+            'channel': self.channel,
+            'content': self.content
+        }
 
 def conversion_dico_user(dico):
     return User[dico['id'], dico['name']]

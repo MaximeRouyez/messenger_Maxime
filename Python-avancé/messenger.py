@@ -125,12 +125,12 @@ def userscreen ():
     print('n. Create user')
     print('x. Main Menu')
     choice = input('Select an option and press <Enter>: ')
-    # if choice == 'x':
-    #     start()
-    # elif choice == 'n':
-    #     newuser()
-    # else: 
-    #     userscreen()
+    if choice == 'x':
+        start()
+    elif choice == 'n':
+        newuser()
+    else:
+        userscreen()
 
 def channelscreen ():
     print('channels')
@@ -171,11 +171,23 @@ def channelscreen ():
 #     server['channels'].append({'id': n_id, 'name': nomgrp, 'member_ids': L})
 #     accueil()
 
-# def newuser():
-#     nom = input('Select a name and press <Enter>: ')
-#     n_id = max(d['id'] for d in server['users'])+1
-#     server['users'].append({'id': n_id, 'name': nom})
-#     accueil()
+def newuser():
+    '''Crée un nouvel utilisateur et le sauvegarde.'''
+    # On charge les données du serveur
+    server_with_classes = load_server()
+    # On demande le nom du nouvel utilisateur
+    nom = input('Select a name and press <Enter>: ')
+    # On prend un identifiant non utilisé
+    n_id = max(user.id for user in server_with_classes['users']) + 1
+    # On crée un nouvel utilisateur, représenté par un objet de la classe `User`
+    new_user = User(nom, n_id)
+    # On ajoute cet utilisateur à la liste des utilisateurs du serveur
+    server_with_classes['users'].append(new_user)
+    # On sauvegarde le serveur
+    save_server(server_with_classes)
+    # On retourne à la liste des utilisateurs :
+    # le nouvel utilisateur doit bien s'afficher
+    userscreen()
 
 def accueil(): 
     print('=== Messenger ===')

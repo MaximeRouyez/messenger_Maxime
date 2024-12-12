@@ -1,12 +1,36 @@
 from datetime import datetime
 import json
+
+SERVER_FILE_PATH = 'server_json.json'
+
 def load_server():
-    with open ('server_json.json') as file:
+    with open (SERVER_FILE_PATH) as file:
         server= json.load(file)
         users = [User(user['name'], user['id']) for user in server['users']]
         channels = [Channels(channel['id'], channel['name'], channel['member_ids']) for channel in server['channels']]
         messages = [Messages(message['id'], message['reception_date'], message['sender_id'], message['channel'], message['content']) for message in server['messages']]
-    return users, channels
+
+    server_with_classes = {
+        'users': users,
+        'channels': channels,
+        'messages': messages
+    }
+    return server_with_classes
+
+def save_server(server_with_classes):
+    '''Sauvegarde le serveur dans un fichier json.'''
+
+    # `server_with_classes` est un dictionnaire qui contient des listes d'objet.
+    # Il faut commencer par convertir chacun de ces objets en dictionnaire,
+    # pour ensuite convertir le tout en json.
+    server_with_dicts = {}
+    server_with_dicts['users'] = [user.to_dict() for user in server_with_classes['users']]
+    server_with_dicts['channels'] = [channel.to_dict() for channel in server_with_classes['channels']]
+    server_with_dicts['messages'] = [message.to_dict() for message in server_with_classes['messages']]
+
+    # `server_with_dicts` est un dictionnaire de listes de dictionnaires : on peut le convertir en json directement.
+    with open(SERVER_FILE_PATH, 'w') as server_json_file:
+        json.dump(server_with_dicts, server_json_file)
 
 class User:
     def __init__(self, name: str, id: int):
@@ -15,6 +39,17 @@ class User:
     def __repr__(self):
         return f'User(name={self.name}, id={self.id}, )'
 
+    def to_dict(self) -> dict:
+        '''Convertit un objet `user` de la classe `User` en `dict`.
+
+        Exemple :
+        >>> user_dict = user.to_dict()
+        '''
+        return {
+            'id': self.id,
+            'name': self.name
+        }
+
 class Channels:
     def __init__(self, id: int, name: str, member_ids: str):
         self.id = id
@@ -22,6 +57,18 @@ class Channels:
         self.member_ids = member_ids
     def __repr__(self):
         return f'Channels(id={self.id}, name={self.name}, member_ids={self.member_ids})'
+
+    def to_dict(self) -> dict:
+        '''Convertit un objet `channel` de la classe `Channels` en `dict`.
+
+        Exemple :
+        >>> channel_dict = channel.to_dict()
+        '''
+        return {
+            'id': self.id,
+            'name': self.name,
+            'member_ids': self.member_ids
+        }
 
 class Messages:
     def __init__(self, id: int, reception_date: str, sender_id: int, channel: int, content: str):
@@ -32,6 +79,20 @@ class Messages:
         self.content = content
     def __repr__(self):
         return f'Messages(id={self.id}, reception_date={self.reception_date}, sender_id={self.sender_id}, channel={self.channel}, content={self.content})'
+
+    def to_dict(self) -> dict:
+        '''Convertit un objet `message` de la classe `Messages` en `dict`.
+
+        Exemple :
+        >>> message_dict = message.to_dict()
+        '''
+        return {
+            'id': self.id,
+            'reception_date': self.reception_date,
+            'sender_id': self.sender_id,
+            'channel': self.channel,
+            'content': self.content
+        }
 
 def conversion_dico_user(dico):
     return User[dico['id'], dico['name']]
@@ -57,22 +118,24 @@ def start ():
 
 def userscreen ():
     print('Users:')
-    users = load_server()
+    server_with_classes = load_server()
+    users: list[User] = server_with_classes['users']
     for user in users:
         print(user.id, '.', user.name)
     print('n. Create user')
     print('x. Main Menu')
     choice = input('Select an option and press <Enter>: ')
-    # if choice == 'x':
-    #     start()
-    # elif choice == 'n':
-    #     newuser()
-    # else: 
-    #     userscreen()
+    if choice == 'x':
+        start()
+    elif choice == 'n':
+        newuser()
+    else:
+        userscreen()
 
 def channelscreen ():
     print('channels')
-    channels = load_server()
+    server_with_classes = load_server()
+    channels = server_with_classes['channels']
     for channel in channels:
         print(channel.id, '.', channel.name)
     print('x. Main Menu')
@@ -108,11 +171,23 @@ def channelscreen ():
 #     server['channels'].append({'id': n_id, 'name': nomgrp, 'member_ids': L})
 #     accueil()
 
-# def newuser():
-#     nom = input('Select a name and press <Enter>: ')
-#     n_id = max(d['id'] for d in server['users'])+1
-#     server['users'].append({'id': n_id, 'name': nom})
-#     accueil()
+def newuser():
+    '''Crée un nouvel utilisateur et le sauvegarde.'''
+    # On charge les données du serveur
+    server_with_classes = load_server()
+    # On demande le nom du nouvel utilisateur
+    nom = input('Select a name and press <Enter>: ')
+    # On prend un identifiant non utilisé
+    n_id = max(user.id for user in server_with_classes['users']) + 1
+    # On crée un nouvel utilisateur, représenté par un objet de la classe `User`
+    new_user = User(nom, n_id)
+    # On ajoute cet utilisateur à la liste des utilisateurs du serveur
+    server_with_classes['users'].append(new_user)
+    # On sauvegarde le serveur
+    save_server(server_with_classes)
+    # On retourne à la liste des utilisateurs :
+    # le nouvel utilisateur doit bien s'afficher
+    userscreen()
 
 def accueil(): 
     print('=== Messenger ===')
@@ -124,8 +199,8 @@ def accueil():
         print('Bye!')
     elif choice== '1':
         userscreen()
-    # elif choice == '2':
-    #     channelscreen()
+    elif choice == '2':
+        channelscreen()
     else :
         print('Unknown option:', choice)
         accueil()

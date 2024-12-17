@@ -1,7 +1,9 @@
 from datetime import datetime
 import json
 
-"essai pour la pull request"
+#"essai pour la pull request"
+# je fais semblant de modifier le fichier
+#c'est pour voir si je sais faire une pull resquest
 
 SERVER_FILE_PATH = 'server_json.json'
 

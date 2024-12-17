@@ -1,11 +1,16 @@
 from datetime import datetime
 import json
+import sys
+import argparse
 
-#"essai pour la pull request"
-# je fais semblant de modifier le fichier
-#c'est pour voir si je sais faire une pull resquest
+parser = argparse.ArgumentParser()
+parser.add_argument('-s','--server')
+parser.add_argument('-u','--url')
+args =  parser.parse_args()
 
-SERVER_FILE_PATH = 'server_json.json'
+print('Le chemin du fichier est :',args.server)
+
+SERVER_FILE_PATH = args.server
 
 def load_server():
     with open (SERVER_FILE_PATH) as file:

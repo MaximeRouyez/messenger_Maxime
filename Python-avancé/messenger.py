@@ -1,6 +1,8 @@
 from datetime import datetime
 import json
 
+# Test d'ajout Python pour Pull request
+
 SERVER_FILE_PATH = 'server_json.json'
 
 def load_server():

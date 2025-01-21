@@ -1,7 +1,6 @@
 from model import User
 from model import Channels
 from model import Messages
-from client import Client
 import json
 SERVER_FILE_PATH = 'server_json.json'
 

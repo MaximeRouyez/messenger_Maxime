@@ -13,19 +13,25 @@ class Remoteserver:
     
     def load_server(self):
         response1 = requests.get('https://groupe5-python-mines.fr/users')
-        self.users = response1.json()
+        users_data = response1.json()
+        self.users = [User(user['name'], user['id']) for user in users_data]
         response2 = requests.get('https://groupe5-python-mines.fr/channels')
-        self.channels = response2.json()
+        channels_data = response2.json()
+        self.channels = [Channels(channel['id'], channel['name'], channel.get('member_ids', [])) for channel in channels_data]
         response3 = requests.get('https://groupe5-python-mines.fr/messages')
-        self.messages = response3.json()
+        messages_data = response3.json()
+        self.messages = [Messages(message['id'], message['reception_date'], message['sender_id'], message.get('channel', None), message['content']) for message in messages_data]
         server_with_classes = {'users': self.users,'channels': self.channels,'messages': self.messages}
         return server_with_classes
     
-    def create_user(self, new_user:dict):
-        requests.post('https://groupe5-python-mines.fr/users/create', json = new_user)
-        
-    def create_channels(self, new_channel:dict):
-        requests.post('https://groupe5-python-mines.fr/channels/create', json = new_channel)
-        
-    def create_messages(self, new_message:dict):
-        requests.post('https://groupe5-python-mines.fr/messages/create', json = new_message)
+    def save_server(self, server_with_classes):
+        users_data = [user.to_dict() for user in server_with_classes['users']]
+        channels_data = [channel.to_dict() for channel in server_with_classes['channels']]
+        messages_data = [message.to_dict() for message in server_with_classes['messages']]
+        response_user = requests.post('https://groupe5-python-mines.fr/users/create', json = {'users': users_data})
+        requests.put('https://groupe5-python-mines.fr/channels/create', json={'channels': channels_data})
+        requests.put('https://groupe5-python-mines.fr/messages/create', json={'messages': messages_data})
+        if response_user.status_code == 200:
+            print("✅ Channels mis à jour sur le serveur !")
+        else:
+            print(f"❌ Erreur lors de la mise à jour des channels : {response_user.text}")

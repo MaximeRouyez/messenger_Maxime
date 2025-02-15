@@ -49,8 +49,8 @@ class Client:
             self.newchannel()
         else: 
             self.channelscreen()
-
-    def newchannel(self):
+        
+    def newchannel (self):
         server_with_classes = self.server.load_server()
         nomgrp = input('Select a name and press <Enter>: ')
         n_id = max(channel.id for channel in server_with_classes['channels']) + 1
@@ -66,10 +66,10 @@ class Client:
                     L.append(user.id)
                 else:
                     n2_id = max(user.id for user in server_with_classes['users'])+1
-                    new_user = User(nom, n_id)
-                    server_with_classes['users'].append(new_user)
+                    new_user = User(nom, n2_id)
                     L.append(n2_id)
-            new_channel = Channels(n2_id, nomgrp, L)
+            server_with_classes['users'].append(new_user)
+            new_channel = Channels(n_id, nomgrp, L)
             server_with_classes['channels'].append(new_channel)
             self.server.save_server(server_with_classes)
         elif choice == 'x':

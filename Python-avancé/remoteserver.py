@@ -11,18 +11,21 @@ class Remoteserver:
         self.url = url
         self.server = self
     
-    def load(self):
-        pass
+    def load_server(self):
+        response1 = requests.get('https://groupe5-python-mines.fr/users')
+        self.users = response1.json()
+        response2 = requests.get('https://groupe5-python-mines.fr/channels')
+        self.channels = response2.json()
+        response3 = requests.get('https://groupe5-python-mines.fr/messages')
+        self.messages = response3.json()
+        server_with_classes = {'users': self.users,'channels': self.channels,'messages': self.messages}
+        return server_with_classes
     
-    def get_users(self):
-        response = requests.get('https://groupe5-python-mines.fr/users')
-        Users = response.json()
-        return [Users.dico_to_user(user) for user in Users]
-    
-    def get_channels(self):
-        response = requests.get('https://groupe5-python-mines.fr/channels')
-        Channels = response.json()
-        return [Channels.dico_to_user(channel) for channel in Channels]
-        
     def create_user(self, new_user:dict):
         requests.post('https://groupe5-python-mines.fr/users/create', json = new_user)
+        
+    def create_channels(self, new_channel:dict):
+        requests.post('https://groupe5-python-mines.fr/channels/create', json = new_channel)
+        
+    def create_messages(self, new_message:dict):
+        requests.post('https://groupe5-python-mines.fr/messages/create', json = new_message)

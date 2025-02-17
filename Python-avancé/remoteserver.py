@@ -28,9 +28,9 @@ class Remoteserver:
         users_data = [user.to_dict() for user in server_with_classes['users']]
         channels_data = [channel.to_dict() for channel in server_with_classes['channels']]
         messages_data = [message.to_dict() for message in server_with_classes['messages']]
-        response_user = requests.post('https://groupe5-python-mines.fr/users/create', json = {'messages': users_data})
-        requests.put('https://groupe5-python-mines.fr/channels/create', json={'channels': channels_data})
-        requests.put('https://groupe5-python-mines.fr/messages/create', json={'messages': messages_data})
+        response_user = requests.post('https://groupe5-python-mines.fr/users/create', json = users_data[-1])
+        requests.post('https://groupe5-python-mines.fr/channels/create', json= channels_data[-1])
+        requests.post('https://groupe5-python-mines.fr/messages/create', json= messages_data[-1])
         if response_user.status_code == 200:
             print("✅ Channels mis à jour sur le serveur !")
         else:

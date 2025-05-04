@@ -1,10 +1,15 @@
 from model import User
 from model import Channels
-from server import Server
+from localserver import Localserver
+from remoteserver import Remoteserver
 
 class Client:
-    def __init__(self, server : Server):
+    def __init__(self, server: 'Localserver | Remoteserver'):
         self.server = server
+
+    # Attention vous avez dupliqué cette fonction,
+    # la fonction `accueil` fait exactement la même chose.
+    # Il vaut mieux n'en garder qu'une.
     def start (self):
         print('=== Messenger ===')
         print('x. Leave')
@@ -18,10 +23,12 @@ class Client:
         elif choice == '2':
             self.channelscreen()
 
-    def userscreen (self):
+    def userscreen (self) -> None:
         print('Users:')
-        server_with_classes = self.server.load_server()
-        users: list[User] = server_with_classes['users']
+        # Plutôt que de tout charger, il vaut mieux
+        # récupérer uniquement les données dont vous avez
+        # besoin : les `User`.
+        users: list[User] = self.server.get_users()
         for user in users:
             print(user.id, '.', user.name)
         print('n. Create user')
@@ -34,6 +41,7 @@ class Client:
         else:
             self.userscreen()
 
+    # Même remarque que pour `userscreen`
     def channelscreen (self):
         print('channels')
         server_with_classes = self.server.load_server()
@@ -49,7 +57,8 @@ class Client:
             self.newchannel()
         else: 
             self.channelscreen()
-        
+
+    # Même remarque que pour `newuser`
     def newchannel (self):
         server_with_classes = self.server.load_server()
         nomgrp = input('Select a name and press <Enter>: ')
@@ -79,12 +88,12 @@ class Client:
         self.accueil()
 
     def newuser(self):
-        server_with_classes = self.server.load_server()
         nom = input('Select a name and press <Enter>: ')
-        n_id = max(user.id for user in server_with_classes['users']) + 1
-        new_user = User(nom, n_id)
-        server_with_classes['users'].append(new_user)
-        self.server.save_server(server_with_classes)
+        # Cette logique n'est vraie que pour `Localserver`.
+        # Il vaut mieux créer des fonctions `create_user` dans
+        # `Localserver` et `Remoteserver`, qui se chargeront de la
+        # logique interne.
+        self.server.create_user(nom)
         self.userscreen()
 
     def accueil(self): 

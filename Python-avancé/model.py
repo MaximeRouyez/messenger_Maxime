@@ -2,21 +2,26 @@ class User:
     def __init__(self, name: str, id: int):
         self.id = id
         self.name = name
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'User(name={self.name}, id={self.id}, )'
     def to_dict(self) -> dict:
         return {'id': self.id,'name': self.name}
-    def conversion_dico_user(dico):
-        return User[dico['id'], dico['name']]
+
+    # Si vous n'êtes pas dans une `classmethod` ou une `staticmethod`,
+    # votre premier paramètre doit toujours être `self`.
+    @classmethod
+    def conversion_dico_user(cls, dico) -> 'User':
+        return cls(dico['name'], dico['id'])
+    # Quelle différence avec votre fonction `to_dict` ?
     def conversion_user_dico(self):
         return {'id': self.id, 'name': self.name}
 
 class Channels:
-    def __init__(self, id: int, name: str, member_ids: str):
+    def __init__(self, id: int, name: str, member_ids: 'list[int]'):
         self.id = id
         self.name = name
         self.member_ids = member_ids
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'Channels(id={self.id}, name={self.name}, member_ids={self.member_ids})'
     def to_dict(self) -> dict:
         return {'id': self.id,'name': self.name,'member_ids': self.member_ids}
